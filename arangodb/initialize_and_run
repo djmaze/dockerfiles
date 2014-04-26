@@ -1,0 +1,15 @@
+#!/bin/sh
+/usr/sbin/arangod -c /etc/arangodb/arangod.conf &
+
+# Wait for server to start
+while : ; do bash -c "echo >/dev/tcp/localhost/8529" >/dev/null 2>&1 && break || sleep 1; done
+
+if [ $DATABASE_NAME ]; then
+  echo Creating database $DATABASE_NAME unless exists
+  arangosh --javascript.execute-string "db._createDatabase('$DATABASE_NAME')";
+fi
+
+# FIXME Does this work?
+trap "kill $(cat /var/run/arangodb/arangod.pid)" INT
+
+tail -f /var/log/arangodb/arangod.log
