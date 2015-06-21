@@ -9,6 +9,6 @@ RUN apt-get update && apt-get -y install arangodb=2.0.9
 
 ADD initialize_and_run /
 
-CMD /initialize_and_run
+CMD ["/initialize_and_run"]
 EXPOSE 8529
 VOLUME /var/lib/arangodb
